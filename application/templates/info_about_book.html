@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container">
+    <img src="data:png;base64,{{ book.image }}" class="rounded float-start" alt="Изображение книги" height="300">
+    <div class="div1">
+        <h1>{{ book.title }}</h1>
+        <hr>
+        <h2>Описание</h2>
+        {{ book.description }}
+        <br><br>
+        <b>Жанр:</b> {{ book.str_genre }}
+        <hr>
+        Создана книга на сайте: {{ book.created_date }}
+        {% if book.modified_date %}
+        <br>
+        Изменения внесли: {{ book.modified_date }}
+        {% endif %}
+        <br>
+        ★ {{ book.count_favorites }}
+    </div>
+</div>
+{% endblock %}

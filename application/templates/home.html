@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h1 class="h1-elem">Все книги</h1>
+<form action="" method="post" class="form-filter">
+    {{ form.hidden_tag() }}
+    {{ form.genres.label }}
+    {{ form.genres(class="form-control") }}<br>
+    {{ form.apply(class="btn btn-primary") }}
+</form>
+<div class="container main">
+    {% for book in books %}
+    <div class="card main__item" style="width: 14rem;">
+        <img src="data:png;base64,{{ book.image }}" class="card-img-top" alt="Изображение книги" height="150">
+        <div class="card-body">
+            <h5 class="card-title">{{ book.title }}</h5>
+            {% set length = book.description | length %}
+            <p class="card-text">{% if length > 50 %} {{ book.description[:50] }}... {% else %} {{ book.description
+                }}
+                {% endif %}</p>
+            <p class="card-text">
+                <b>Жанр:</b> {{ book.str_genre }}
+            </p>
+            <p class="card-text">
+                ★ {{ book.count_favorites }}
+            </p>
+            <p class="btn-group btn-group-sm card-text" role="group" aria-label="Basic example">
+                <a href="/download_book/{{ book.id }}" class="btn btn-primary">Скачать</a>
+                <a href="/read_book/{{ book.id }}" class="btn btn-info">Читать</a>
+                <a href="/info_about_book/{{ book.id }}" class="btn btn-info">🛈</a>
+                {% if current_user.is_authenticated and book.id not in books_id %}
+                <a href="/{{ url_add }}/{{ book.id }}" class="btn btn-warning">☆</a>
+                {% elif current_user.is_authenticated and book.id in books_id %}
+                <a href="/{{ url_delete }}/{{ book.id }}" class="btn btn-warning">★</a>
+                {% endif %}
+            </p>
+            {% if current_user.is_authenticated and current_user.is_admin %}
+            <p class="btn-group btn-group-sm card-text" role="group" aria-label="Basic example">
+                <a href="/edit_book/{{ book.id }}" class="btn btn-secondary">Редактировать</a>
+                <a href="/delete_book/{{ book.id }}" class="btn btn-danger">Удалить</a>
+            </p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

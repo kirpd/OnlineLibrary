@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block content %}
+<form action="" method="post" enctype="multipart/form-data">
+    <h1>Добавление книги</h1>
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.title.label }}
+        {{ form.title(class="form-control") }}
+    </div>
+    <br>
+    <div>
+        {{ form.description.label }}
+        {{ form.description(class="form-control") }}
+    </div>
+    <br>
+    <div>
+        {{ form.genre.label }}
+        {{ form.genre(class="form-control") }}
+    </div>
+    <br>
+    <div>
+        {{ form.image.label }}
+        {{ form.image(class="form-control") }}
+    </div>
+    <br>
+    <div>
+        {{ form.pdf_file.label }}
+        {{ form.pdf_file(class="form-control") }}
+    </div>
+    <br>
+    <div>{{ form.submit(class="btn btn-primary") }}</div>
+    <br>
+    {% for error in form.image.errors %}
+    <div>{{ error }}</div>
+    {% endfor %}
+    {% for error in form.pdf_file.errors %}
+    <div>{{ error }}</div>
+    {% endfor %}
+</form>
+{% endblock %}
