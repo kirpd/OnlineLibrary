@@ -14,9 +14,10 @@ from forms.edit_book import EditBookForm
 from forms.filter_genre import FilterGenre
 from flask_login import LoginManager, login_required, logout_user, login_user, current_user
 from flask_restful import Api
+from waitress import serve
 
 app = Flask(__name__)  # Создаем приложение Flask
-api = Api(app)  # API для приложения Flasl
+api = Api(app)  # API для приложения Flask
 login_manager = LoginManager()  # Нужно для того, чтобы можно было авторизовывать пользователей
 login_manager.init_app(app)  # Инициализация
 app.config.from_pyfile('config.py')  # В файле config.py хранятся все настройки для приложения
@@ -48,9 +49,9 @@ def index():
             book.str_genre = book.genre[0].name  # В шаблоне можно будет удобно получить значение по атрибуту
             # str_genre
         images_books = [str(base64.b64encode(book.image))[2:][:-1] for book in books]
-        # images_books - это списочное выражение, в котором происходит превращение потока байт в base24.
+        # images_books - это списочное выражение, в котором происходит превращение потока байт в base64.
         # После срезом удаляются первые 2 символа (b'), и еще срезается самый последний символ (') для того чтобы
-        # в html в теге <img> можно было в атрибуте src поместить "data:png;base64, {{ изображение в формате base24 }}"
+        # в html в теге <img> можно было в атрибуте src поместить "data:png;base64, {{ изображение в формате base64 }}"
         # без лишних знаков, иначе изображение не отобразится.
         for book, image in zip(books, images_books):
             book.image = image  # Присваиваем изображения в формате base24, при этом db_sess.commit() не делается.
@@ -363,7 +364,8 @@ def main():
     api.add_resource(genres_resource.GenreResource, '/api/genres/<int:genre_id>')
     api.add_resource(genres_resource.GenreListResource, '/api/genres')
     port = int(environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
+    serve(app, host='0.0.0.0', port=port)  # Для того, чтобы каждому пользователю создавался свой экземпляр Flask
+    # приложения и сервер работал бы асинхронно
 
 
 if __name__ == '__main__':
